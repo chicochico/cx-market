@@ -36,7 +36,11 @@ class Order(BaseModel):
         return v
 
 
-@router.post("/order")
+class OrderResponse(BaseModel):
+    msg: str
+
+
+@router.post("/order", response_model=OrderResponse)
 async def process_order(order: Order):
     # "process" the order
-    return {"msg": "success"}
+    return OrderResponse(msg="success")
