@@ -28,3 +28,6 @@ The API doc can be found at after executing the app [http://127.0.0.1:8000/docs]
 POST /orders/order
 GET  /orders
 ```
+
+## Notes
+- Framework: [FastAPI](https://fastapi.tiangolo.com/)
