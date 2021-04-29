@@ -21,7 +21,8 @@ to run tests you can run `docker run --rm --entrypoint pytest market`
 to run tests run `pytest` in the project directory
 
 ### API Documentation
-The API doc can be found at after executing the app [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs).
+The API docs can be found at [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) after executing the app.
+API schema is also available at [http://127.0.0.1:8000/openapi.json](http://127.0.0.1:8000/openapi.json).
 
 ## Endpoints
 ```
