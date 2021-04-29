@@ -3,7 +3,7 @@ from fastapi import FastAPI
 
 import market.orders as orders
 
-app = FastAPI()
+app = FastAPI(title="Market", description="An API for trading.")
 app.include_router(orders.router)
 
 
