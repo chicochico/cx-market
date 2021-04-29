@@ -45,7 +45,7 @@ orders = []
 
 
 @router.post("/order", response_model=OrderResponse)
-async def process_order(order: Order):
+async def submit_order(order: Order):
     # "process" the order here the order can be
     # sent for execution and saved into DB
     orders.append(order)
