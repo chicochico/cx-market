@@ -23,7 +23,7 @@ class Side(str, Enum):
 
 
 class Order(BaseModel):
-    isin: str = Field(regex="([A-Z]{2})([A-Z0-9]{9})([0-9]{1})")
+    isin: str = Field(regex="^([A-Z]{2})([A-Z0-9]{9})([0-9]{1})$")
     limit_price: float = Field(gt=0)
     side: Side
     valid_until: int

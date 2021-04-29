@@ -62,7 +62,7 @@ valid_orders = [
 invalid_orders = [
     {
         "isin": "US0378331005",
-        "limit_price": 0,
+        "limit_price": 0,  # invalid price
         "side": "buy",
         "valid_until": time.time() + 10,
         "quantity": 200,
@@ -72,17 +72,24 @@ invalid_orders = [
         "limit_price": 150.0,
         "side": "sell",
         "valid_until": time.time() + 10,
-        "quantity": -10,
+        "quantity": -10,  # invalid quantity
     },
     {
         "isin": "US36467W1099",
         "limit_price": 11.0,
-        "side": "foobar",
+        "side": "foobar",  # invalid side
         "valid_until": time.time() + 10,
         "quantity": 30,
     },
     {
-        "isin": "RANDOMISIN",
+        "isin": "RANDOMISIN",  # invalid isin
+        "limit_price": 11.0,
+        "side": "Buy",  # uppercase
+        "valid_until": time.time() + 10,
+        "quantity": 30,
+    },
+    {
+        "isin": "US36467W10990001",  # invalid isin
         "limit_price": 11.0,
         "side": "Buy",  # uppercase
         "valid_until": time.time() + 10,
