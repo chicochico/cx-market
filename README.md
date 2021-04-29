@@ -26,4 +26,5 @@ The API doc can be found at after executing the app [http://127.0.0.1:8000/docs]
 ## Endpoints
 ```
 POST /orders/order
+GET  /orders
 ```

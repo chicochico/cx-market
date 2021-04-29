@@ -4,7 +4,10 @@ import pytest
 from fastapi.testclient import TestClient
 from market.market import app
 
-client = TestClient(app)
+
+@pytest.fixture
+def client():
+    return TestClient(app)
 
 
 # isin (String, 12 chars (this identifies a stock))
@@ -13,47 +16,49 @@ client = TestClient(app)
 # valid_until (Integer, Unix UTC Timestamp)
 # quantity (Integer, always >0)
 
+valid_until_timestamp = int(time.time()) + (60 * 60 * 24)
+
 valid_orders = [
     {
         "isin": "US0378331005",
         "limit_price": 130.0,
         "side": "buy",
-        "valid_until": time.time() + 10,
+        "valid_until": valid_until_timestamp,
         "quantity": 200,
     },
     {
         "isin": "US0378331005",
         "limit_price": 150.0,
         "side": "sell",
-        "valid_until": time.time() + 10,
+        "valid_until": valid_until_timestamp,
         "quantity": 200,
     },
     {
         "isin": "US36467W1099",
         "limit_price": 11.0,
         "side": "Sell",  # uppercase
-        "valid_until": time.time() + 10,
+        "valid_until": valid_until_timestamp,
         "quantity": 30,
     },
     {
         "isin": "US36467W1099",
         "limit_price": 11.0,
         "side": "Buy",  # uppercase
-        "valid_until": time.time() + 10,
+        "valid_until": valid_until_timestamp,
         "quantity": 30,
     },
     {
         "isin": "NL0010273215",
         "limit_price": 560.0,
         "side": "sell",
-        "valid_until": time.time() + 10,
+        "valid_until": valid_until_timestamp,
         "quantity": 100,
     },
     {
         "isin": "NL0010273215",
         "limit_price": 540.0,
         "side": "buy",
-        "valid_until": time.time() + 10,
+        "valid_until": valid_until_timestamp,
         "quantity": 100,
     },
 ]
@@ -64,42 +69,42 @@ invalid_orders = [
         "isin": "US0378331005",
         "limit_price": 0,  # invalid price
         "side": "buy",
-        "valid_until": time.time() + 10,
+        "valid_until": valid_until_timestamp,
         "quantity": 200,
     },
     {
         "isin": "US0378331005",
         "limit_price": 150.0,
         "side": "sell",
-        "valid_until": time.time() + 10,
+        "valid_until": valid_until_timestamp,
         "quantity": -10,  # invalid quantity
     },
     {
         "isin": "US36467W1099",
         "limit_price": 11.0,
         "side": "foobar",  # invalid side
-        "valid_until": time.time() + 10,
+        "valid_until": valid_until_timestamp,
         "quantity": 30,
     },
     {
         "isin": "RANDOMISIN",  # invalid isin
         "limit_price": 11.0,
         "side": "Buy",  # uppercase
-        "valid_until": time.time() + 10,
+        "valid_until": valid_until_timestamp,
         "quantity": 30,
     },
     {
         "isin": "US36467W10990001",  # invalid isin
         "limit_price": 11.0,
         "side": "Buy",  # uppercase
-        "valid_until": time.time() + 10,
+        "valid_until": valid_until_timestamp,
         "quantity": 30,
     },
     {
         "isin": 100,  # integer isin
         "limit_price": 11.0,
         "side": "Buy",  # uppercase
-        "valid_until": time.time() + 10,
+        "valid_until": valid_until_timestamp,
         "quantity": 30,
     },
     {
@@ -113,39 +118,39 @@ invalid_orders = [
         "isin": "NL0010273215",
         "limit_price": -540.0,
         "side": "buy",
-        "valid_until": time.time() + 10,
+        "valid_until": valid_until_timestamp,
         "quantity": 100,
     },
     # missing fields
     {
         "limit_price": 540.0,
         "side": "buy",
-        "valid_until": time.time() + 10,
+        "valid_until": valid_until_timestamp,
         "quantity": 100,
     },
     {
         "isin": "NL0010273215",
         "side": "buy",
-        "valid_until": time.time() + 10,
+        "valid_until": valid_until_timestamp,
         "quantity": 100,
     },
     {
         "isin": "NL0010273215",
         "limit_price": -540.0,
-        "valid_until": time.time() + 10,
-        "quantity": 100,
-    },
-    {
-        "isin": "NL0010273215",
-        "limit_price": -540.0,
-        "side": "buy",
+        "valid_until": valid_until_timestamp,
         "quantity": 100,
     },
     {
         "isin": "NL0010273215",
         "limit_price": -540.0,
         "side": "buy",
-        "valid_until": time.time() + 10,
+        "quantity": 100,
+    },
+    {
+        "isin": "NL0010273215",
+        "limit_price": -540.0,
+        "side": "buy",
+        "valid_until": valid_until_timestamp,
     },
     {},
 ]
@@ -155,7 +160,7 @@ invalid_orders = [
     "test_input",
     valid_orders,
 )
-def test_valid_orders(test_input):
+def test_valid_orders(client, test_input):
     response = client.post("/orders/order", json=test_input)
     assert response.status_code == 200
     assert response.json() == {"msg": "success"}
@@ -165,6 +170,12 @@ def test_valid_orders(test_input):
     "test_input",
     invalid_orders,
 )
-def test_invalid_orders(test_input):
+def test_invalid_orders(client, test_input):
     response = client.post("/orders/order", json=test_input)
     assert response.status_code == 422  # validation error
+
+
+def test_get_orders(client):
+    response = client.get("/orders")
+    assert response.status_code == 200
+    assert len(response.json()) == 6  # the 6 orders submitted in the valid orders test

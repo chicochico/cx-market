@@ -1,5 +1,6 @@
 import time
 from enum import Enum
+from typing import List
 
 from fastapi import APIRouter
 from pydantic import BaseModel, Field, validator
@@ -40,7 +41,17 @@ class OrderResponse(BaseModel):
     msg: str
 
 
+orders = []
+
+
 @router.post("/order", response_model=OrderResponse)
 async def process_order(order: Order):
-    # "process" the order
+    # "process" the order here the order can be
+    # sent for execution and saved into DB
+    orders.append(order)
     return OrderResponse(msg="success")
+
+
+@router.get("/", response_model=List[Order])
+async def get_orders():
+    return orders
