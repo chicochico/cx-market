@@ -1,6 +1,6 @@
 # Market
 
-This is my submission for the coding challenge. An api endpoint to validate orders submissions.
+This a coding exercise: An api endpoint to validate orders submissions.
 
 ## Running
 ### With docker
